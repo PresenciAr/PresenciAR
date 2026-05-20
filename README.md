@@ -51,7 +51,7 @@ Toda la información es almacenada en la nube utilizando Supabase, permitiendo a
 ---
 
 # Funcionamiento general
-
+```
 Alumno acerca SUBE.
         ↓
 Lector RC522 detecta UID.
@@ -63,7 +63,7 @@ Se registra fecha y hora mediante DS3231.
 Datos enviados a Supabase.
         ↓
 La aplicación muestra la asistencia en tiempo real.
-
+```
 ---
 
 # Modo Offline Inteligente
