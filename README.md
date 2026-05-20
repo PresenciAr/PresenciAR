@@ -1,9 +1,9 @@
-# 📌 PresenciAR  
+# PresenciAR  
 ### Sistema Inteligente de Asistencia Escolar mediante NFC
 
 ---
 
-## 📖 Descripción
+## Descripción
 **PresenciAR** es un sistema de asistencia escolar automatizado que utiliza tecnología NFC para registrar el ingreso de alumnos de forma rápida, precisa y segura.
 
 El sistema funciona mediante terminales electrónicas ubicadas en puntos estratégicos de la institución. Los alumnos acercan su tarjeta SUBE a la terminal y automáticamente se registra su asistencia junto con la hora exacta de ingreso.
@@ -12,7 +12,7 @@ Toda la información es almacenada en la nube utilizando Supabase, permitiendo a
 
 ---
 
-# 🎯 Objetivos del proyecto
+# Objetivos del proyecto
 - Digitalizar el sistema de asistencia escolar.
 - Reducir el tiempo perdido en el pase manual de lista.
 - Mejorar la precisión en el registro de horarios.
@@ -21,9 +21,9 @@ Toda la información es almacenada en la nube utilizando Supabase, permitiendo a
 
 ---
 
-# ⚙️ Tecnologías utilizadas
+# Tecnologías utilizadas
 
-## 🖥️ Hardware
+## Hardware
 - ESP32  
   Microcontrolador principal encargado del procesamiento del sistema.
 
@@ -44,17 +44,13 @@ Toda la información es almacenada en la nube utilizando Supabase, permitiendo a
 
 ---
 
-## 💻 Software
-- Kotlin (Aplicación Android)
-- LittleFS (almacenamiento offline)
+## Software
 - Supabase (base de datos en la nube)
-- NFC
-- API REST
-- SQLite / almacenamiento local temporal
+//Por revisar
 
 ---
 
-# 🧠 Funcionamiento general
+# Funcionamiento general
 
 ```text
 Alumno acerca SUBE
@@ -72,7 +68,7 @@ La aplicación muestra la asistencia en tiempo real
 
 ---
 
-# ☁️ Modo Offline Inteligente
+# Modo Offline Inteligente
 El sistema incorpora un modo offline mediante LittleFS.
 
 Si la terminal pierde conexión a internet:
@@ -84,18 +80,18 @@ Esto garantiza continuidad y evita pérdida de información.
 
 ---
 
-# 🔒 Seguridad y privacidad
+# Seguridad y privacidad
 PresenciAR prioriza la seguridad de los datos.
 
 ## El sistema:
-- ❌ No accede a datos personales almacenados en la tarjeta SUBE
-- ✅ Solo procesa el UID único de la tarjeta
-- ✅ Mantiene la información del alumno protegida en la base de datos
-- ✅ Utiliza almacenamiento seguro en la nube
+-  No accede a datos personales almacenados en la tarjeta SUBE
+-  Solo procesa el UID único de la tarjeta
+-  Mantiene la información del alumno protegida en la base de datos
+-  Utiliza almacenamiento seguro en la nube
 
 ---
 
-# 📱 Aplicación de gestión
+# Aplicación de gestión
 La aplicación permite:
 - Registrar alumnos
 - Vincular UID de tarjetas SUBE
@@ -106,7 +102,7 @@ La aplicación permite:
 
 ---
 
-# 🚀 Escalabilidad
+# Escalabilidad
 Gracias al uso de Supabase y arquitectura modular:
 - múltiples terminales pueden funcionar simultáneamente
 - el sistema puede crecer a distintas instituciones
@@ -114,7 +110,7 @@ Gracias al uso de Supabase y arquitectura modular:
 
 ---
 
-# 🏫 Público objetivo
+# Público objetivo
 - Escuelas secundarias
 - Instituciones educativas
 - Centros de formación
@@ -122,15 +118,13 @@ Gracias al uso de Supabase y arquitectura modular:
 
 ---
 
-# 📌 Estado del proyecto
-🔧 Proyecto en desarrollo — Último año de Informática Técnica.
+# Equipo de desarrollo
+Gomez Thomas M.
+Oscar Barrios
+Villalba Victoria A.
+Dann Joaquin
 
 ---
 
-# 👨‍💻 Equipo de desarrollo
-Proyecto desarrollado por estudiantes de escuela técnica con orientación en informática.
-
----
-
-# 🌟 PresenciAR
+# PresenciAR
 ### *Asistencia inteligente que transforma la gestión escolar.*
