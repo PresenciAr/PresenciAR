@@ -1,6 +1,11 @@
 # PresenciAR  
 ### Sistema Inteligente de Asistencia Escolar mediante NFC
-
+---
+# Equipo de desarrollo
+- Gomez Thomas M. - RyuseiZero
+- Oscar Barrios - Zenrit
+- Villalba Victoria A. -
+- Dann Joaquin -
 ---
 
 ## Descripción
@@ -114,13 +119,6 @@ Gracias al uso de Supabase y arquitectura modular:
 - Centros de formación
 - Organizaciones que requieran control automatizado de asistencia
 
----
-
-# Equipo de desarrollo
-- Gomez Thomas M.
-- Oscar Barrios
-- Villalba Victoria A.
-- Dann Joaquin
 
 ---
 
