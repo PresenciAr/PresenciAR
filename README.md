@@ -3,9 +3,9 @@
 ---
 # Equipo de desarrollo
 - Gomez Thomas M. - RyuseiZero
-- Oscar Barrios - Zenrit
-- Villalba Victoria A. -
-- Dann Joaquin -
+- Oscar Barrios - Oscar/Zenrit
+- Villalba Victoria A. - villalbavictoria505
+- Dann Joaquin - Sorakam11
 ---
 
 ## Descripción
