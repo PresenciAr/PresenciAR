@@ -51,19 +51,19 @@ Toda la información es almacenada en la nube utilizando Supabase, permitiendo a
 ---
 
 # Funcionamiento general
-'''text
-Alumno acerca SUBE
+
+Alumno acerca SUBE.
         ↓
-Lector RC522 detecta UID
+Lector RC522 detecta UID.
         ↓
-ESP32 procesa información
+ESP32 procesa información.
         ↓
-Se registra fecha y hora mediante DS3231
+Se registra fecha y hora mediante DS3231.
         ↓
-Datos enviados a Supabase
+Datos enviados a Supabase.
         ↓
-La aplicación muestra la asistencia en tiempo real
-'''
+La aplicación muestra la asistencia en tiempo real.
+
 ---
 
 # Modo Offline Inteligente
