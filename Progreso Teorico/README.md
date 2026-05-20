@@ -1,4 +1,4 @@
-En este archivo solamente vamos a subir el progreso que hicimos en lo que teoría respecta:
+En esta carpeta solamente vamos a subir el progreso que hicimos en lo que teoría respecta:
 
 División de roles temporal:
 Gómez Thomas – Desarrollo de la aplicación.
@@ -7,8 +7,10 @@ Villalba Victoria – Creación y vinculación de base de datos con los demás i
 Dann Joaquín – Desarrollo de diseño e implementación de componentes en carcasa 3d.
 
 Gomez Thomas:
-"""Investigando herramientas y lenguajes
+```Unknown¡?
+Investigando herramientas y lenguajes...
 
+```
 Barrios Oscar:
 Villalba Victoria:
 Dann Joaquin:
