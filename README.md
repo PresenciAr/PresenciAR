@@ -51,7 +51,7 @@ Toda la información es almacenada en la nube utilizando Supabase, permitiendo a
 ---
 
 # Funcionamiento general
-'''
+'''text
 Alumno acerca SUBE
         ↓
 Lector RC522 detecta UID
