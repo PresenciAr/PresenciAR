@@ -9,7 +9,7 @@ Dann Joaquín – Desarrollo de diseño e implementación de componentes en carc
  - Gomez Thomas:
 ```
 Teoria aplicacion:
-La aplicacion se decidio que se iba a desarrolar utilizando flutter y se iba a probar en android studio. 
+La aplicacion se decidio que se iba a desarrollar utilizando flutter, android studio, Y como lenguaje de programaion principàl dart. 
 Segun la teoria el diseño de la aplicacion deberia tener como principales puntos:
 Visualizacion de asistencias de la base de datos.
 Scanner NFC y vinculacion con un alumno.
