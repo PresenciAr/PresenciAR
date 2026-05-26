@@ -17,7 +17,7 @@ Toda la información es almacenada en la nube utilizando Supabase, permitiendo a
 
 ---
 
-# Objetivos del proyecto
+# Objetivos del proyecto:
 - Digitalizar el sistema de asistencia escolar.
 - Reducir el tiempo perdido en el pase manual de lista.
 - Mejorar la precisión en el registro de horarios.
