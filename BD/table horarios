@@ -1,0 +1,8 @@
+create table horarios (
+  id uuid primary key default gen_random_uuid(),
+  alumno_id uuid references alumnos(id),
+  dia_semana integer not null,
+  hora_ingreso time not null,
+  tolerancia_min integer default 15,
+  ciclo_lectivo integer not null
+);
