@@ -1,0 +1,9 @@
+create table asistencias (
+  id uuid primary key default gen_random_uuid(),
+  alumno_id uuid references alumnos(id),
+  terminal_id uuid references terminales(id),
+  horario_id uuid references horarios(id),
+  timestamp timestamptz default now(),
+  uid_leido text,
+  estado text
+);
