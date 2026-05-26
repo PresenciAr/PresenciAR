@@ -123,4 +123,4 @@ Gracias al uso de Supabase y arquitectura modular:
 ---
 
 # PresenciAR
-### *Asistencia inteligente que transforma la gestión escolar.*
+### *Viendo el presente, pensado en el futuro.*
