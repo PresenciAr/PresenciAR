@@ -1,0 +1,6 @@
+create table terminales (
+  id uuid primary key default gen_random_uuid(),
+  nombre text not null,
+  ubicacion text,
+  activa boolean default true
+);
