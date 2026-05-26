@@ -1,0 +1,12 @@
+create extension if not exists "pgcrypto";
+create table Alumnos(
+  ID uuid primary key default gen_random_uuid(),
+  Nombre text not null,
+  Apellido text not null,
+  Dni text unique,
+  Curso text,
+  Division text,
+  Turno text,
+  uid_sube text unique not null,
+  activo boolean default true
+);
