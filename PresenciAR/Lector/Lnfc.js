@@ -70,6 +70,6 @@ const btnEscanear = document.getElementById('btnEscanear');
         //de escritorio en caso de que se detecte un modulo nfc
         //Actualizacion de mi para el lector: Al parecer ya es compatible 
         //siempre y cuando el lector use ndef
-        logDiv.innerText = "Nota: Web NFC requiere Android (Chrome/Firefox mobile)";
+        logDiv.innerText = "";
     }
 
