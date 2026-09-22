@@ -108,7 +108,7 @@ async function actualizar(id) {
     const { error } = await supabase2
         .from('alumnos')
         .update({ nombre: nuevoNombre, apellido: nuevoApellido, dni: nuevoDni, curso: nuevoCurso, division:nuevoDivision, 
-            turno:nuevoTurno, uid_sube:nuevoUid_sube, activo: nuevoActivo
+            turno:nuevoTurno, activo: nuevoActivo
          })
         .eq('id', id); 
 
