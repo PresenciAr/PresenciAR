@@ -11,6 +11,7 @@
 
         
         async function cargarAlumnos() {
+
             // Hacemos la consulta a la tabla
             const { data, error } = await supabase2
                 .from('alumnos')
@@ -27,6 +28,7 @@
 
             // Iterar los registros devueltos por Supabase
             data.forEach(alumnos => {
+
                 const fila = document.createElement('tr');
                 fila.id=`fila-${alumnos.id}`;
 
@@ -165,10 +167,51 @@ async function confirmRegresoPortal() {
 function editarSube(id){
 localStorage.setItem('id',id);
 window.location.href="../Lector/lectura-nfc.html";
-
-
+}
+function buscador(){
+    //suspendido por no ser prioridad segun el sistema
 }
 
+async function agregarAlumno() {
+
+    const nombre = prompt("Ingrese Nombre:") || "";
+    if (nombre === null) return; // Si cancela el prompt
+
+    const apellido = prompt("Ingrese Apellido:") || "";//el || "" es por un errorsito muy divertido relacionado a lo nulo tarde en verlo
+    const dni = prompt("Ingrese DNI (sin puntos):") || "";
+    const curso = prompt("Ingrese Curso (ej: 6to):") || "";
+    const division = prompt("Ingrese División (ej: 1ra):") || "";
+    const turno = prompt("Ingrese Turno (Mañana/Tarde):") || "";
+    const activo = prompt("¿Está activo? (SI/NO):", "SI") || "";
+    const activobool=activo.toLowerCase().trim()=="si";
+
+    const nuevoAlumno = { nombre, apellido, dni, curso, division, turno, activobool };
+
+    
+
+    const { error } = await supabase2
+        .from('alumnos')
+        .insert([{
+            nombre: nombre.trim(),//trim relacionado al error de arriba, es por si hay espacios estos dejen de existir
+            apellido: apellido.trim(),
+            dni: dni.trim(),
+            curso: curso.trim(),
+            division: division.trim(),
+            turno: turno.trim(),
+            activo: activobool
+        }]);
+        //dudo de si hacerlo con todos esta bien revisar mas a futuro si no genera error o si tendria que especificarle al usuario que el dni no va con .
+        //averiguar si puedo eliminar el . de alguna forma (no prioritario por ahora)
+
+    if (error) {
+        alert('Error al insertar el alumno en Supabase: ' + error.message);
+        console.error(error);//el rojo es mas estetico pero el amarillo como que advierte 
+        return;
+    }
+
+    alert('¡Alumno registrado con éxito!');
+    cargarAlumnos();
+}
 
 
         confirmRegresoPortal();

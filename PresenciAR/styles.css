@@ -88,6 +88,12 @@ table {
     overflow: hidden;
 }
 
+#botonAgregar{
+max-width: 900px;
+width: 90%;
+margin: 20px;
+}
+
 th {
     background: #3a7bd5;
     color: #fff;
