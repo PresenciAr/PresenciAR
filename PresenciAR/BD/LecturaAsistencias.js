@@ -10,7 +10,7 @@ function diaSemanaDeTimestamp(timestampTexto) {
 
 async function cargarAsistencias() {
 
-
+    // Traer alumnos (para relacionar por uid_sube)
     const { data: alumnos, error: errorAlumnos } = await supabase2
         .from('alumnos')
         .select('id, nombre, apellido, uid_sube');
@@ -20,7 +20,7 @@ async function cargarAsistencias() {
         return;
     }
 
-
+    // Traer horarios
     const { data: horarios, error: errorHorarios } = await supabase2
         .from('horarios')
         .select('alumno_id, dia_semana, hora_ingreso, tolerancia_min');
@@ -30,7 +30,7 @@ async function cargarAsistencias() {
         return;
     }
 
-
+    // Traer terminales (para mostrar nombre)
     const { data: terminales, error: errorTerminales } = await supabase2
         .from('terminales')
         .select('id, nombre, ubicacion');
@@ -40,7 +40,7 @@ async function cargarAsistencias() {
         return;
     }
 
-
+    // Traer las últimas lecturas que mandó el ESP32
     const { data: asistencias, error: errorAsistencias } = await supabase2
         .from('asistencias')
         .select('id, uid_leido, timestamp, terminal_id')
@@ -52,7 +52,7 @@ async function cargarAsistencias() {
         return;
     }
 
-
+    // Selecciono el cuerpo de la tabla en el HTML
     const tbody = document.querySelector('#tabla-asistencias tbody');
     tbody.innerHTML = '';
 
@@ -73,7 +73,7 @@ async function cargarAsistencias() {
             estado = 'sin_horario';
 
             if (horario) {
-                
+                // hora_ingreso llega como texto
                 const [horaIngreso, minutoIngreso] = horario.hora_ingreso.split(':').map(Number);
 
                 const horaLlegada = new Date(asistencia.timestamp);
@@ -87,7 +87,7 @@ async function cargarAsistencias() {
         const fila = document.createElement('tr');
         fila.innerHTML = `
             <td>${nombreCompleto}</td>
-            <td>${new Date(asistencia.timestamp).toLocaleString('es-AR')}</td>
+            <td>${new Date(asistencia.timestamp).toLocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' })}</td>
             <td>${terminal ? terminal.nombre : asistencia.terminal_id}</td>
             <td>${estado}</td>
         `;
