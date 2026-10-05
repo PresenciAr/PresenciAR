@@ -215,3 +215,496 @@ async function agregarAlumno() {
 
 
         confirmRegresoPortal();
+
+
+let filtroBusqueda = "";
+let filtroEstado = "todos";
+let filtroCurso = "";
+let filtroTurno = "";
+
+//me canse de agarrarlas asi que mejor esto es mas rapido
+
+function obtenerFilas() {
+    return Array.from(
+        document.querySelectorAll("#tabla-alumnos tbody tr")
+    );
+}
+
+
+//busca y filtro masomenos
+
+function aplicarFiltros() {
+
+    const filas = obtenerFilas();
+
+    filas.forEach(fila => {
+
+        // ignorar mensajes de "cargando" o similares
+        if (!fila.querySelector(".nombre")) {
+            return;
+        }
+
+        const nombre =
+            fila.querySelector(".nombre")?.innerText.toLowerCase() || "";
+
+        const apellido =
+            fila.querySelector(".apellido")?.innerText.toLowerCase() || "";
+
+        const dni =
+            fila.querySelector(".dni")?.innerText.toLowerCase() || "";
+
+        const curso =
+            fila.querySelector(".curso")?.innerText.trim() || "";
+
+        const turno =
+            fila.querySelector(".turno")?.innerText.trim() || "";
+
+        const activo =
+            fila.querySelector(".activo")?.innerText
+                .toLowerCase()
+                .trim() || "";
+
+        const textoCompleto =
+            `${nombre} ${apellido} ${dni}`;
+
+
+        const coincideBusqueda =
+            textoCompleto.includes(
+                filtroBusqueda.toLowerCase()
+            );
+
+
+        const coincideCurso =
+            filtroCurso === "" ||
+            curso === filtroCurso;
+
+
+        const coincideTurno =
+            filtroTurno === "" ||
+            turno === filtroTurno;
+
+
+        let coincideEstado = true;
+
+        if (filtroEstado === "activos") {
+
+            coincideEstado =
+                activo === "true" ||
+                activo === "si" ||
+                activo === "sí" ||
+                activo === "1";
+
+        }
+
+        if (filtroEstado === "inactivos") {
+
+            coincideEstado =
+                activo === "false" ||
+                activo === "no" ||
+                activo === "0";
+
+        }
+
+
+        const mostrar =
+            coincideBusqueda &&
+            coincideCurso &&
+            coincideTurno &&
+            coincideEstado;
+
+
+        fila.style.display =
+            mostrar ? "" : "none";
+    });
+
+    actualizarContadores();
+}
+
+
+
+
+function actualizarContadores() {
+
+    const filas = obtenerFilas()
+        .filter(fila => fila.querySelector(".nombre"));
+
+    let total = 0;
+    let activos = 0;
+    let inactivos = 0;
+
+    filas.forEach(fila => {
+
+        const visible =
+            fila.style.display !== "none";
+
+        if (!visible) return;
+
+        total++;
+
+        const activo =
+            fila.querySelector(".activo")?.innerText
+                .toLowerCase()
+                .trim();
+
+        const estaActivo =
+            activo === "true" ||
+            activo === "si" ||
+            activo === "sí" ||
+            activo === "1";
+
+        if (estaActivo) {
+            activos++;
+        } else {
+            inactivos++;
+        }
+    });
+
+
+    // Si existen estas tarjetas en el HTML,
+    // se actualizan automáticamente.
+
+    const statTotal =
+        document.getElementById("statTotal");
+
+    const statActivos =
+        document.getElementById("statActivos");
+
+    const statInactivos =
+        document.getElementById("statInactivos");
+
+
+    if (statTotal) {
+        statTotal.innerText = total;
+    }
+
+    if (statActivos) {
+        statActivos.innerText = activos;
+    }
+
+    if (statInactivos) {
+        statInactivos.innerText = inactivos;
+    }
+
+
+    const resultados =
+        document.getElementById("resultadosLabel");
+
+    if (resultados) {
+
+        resultados.innerText =
+            `${total} registro${total === 1 ? "" : "s"}`;
+    }
+}
+
+
+/* la lista para cursos y diviciones va ahi abajito(es para que la desarrolles yo del futuro)*/
+
+function actualizarCursos() {
+
+    const contenedor =
+        document.getElementById("courseList");
+
+    if (!contenedor) {
+        return;
+    }
+
+
+    const filas =
+        obtenerFilas()
+            .filter(fila =>
+                fila.querySelector(".curso")
+            );
+
+
+    const cursos = {};
+
+
+    filas.forEach(fila => {
+
+        const curso =
+            fila.querySelector(".curso")?.innerText.trim() || "";
+
+        const division =
+            fila.querySelector(".division")?.innerText.trim() || "";
+
+        if (!curso) {
+            return;
+        }
+
+
+        const clave =
+            `${curso} ${division}`.trim();
+
+
+        if (!cursos[clave]) {
+            cursos[clave] = 0;
+        }
+
+        cursos[clave]++;
+    });
+
+
+    contenedor.innerHTML = "";
+
+
+    Object.keys(cursos)
+        .sort()
+        .forEach(clave => {
+
+            const boton =
+                document.createElement("button");
+
+            boton.type = "button";
+
+            boton.innerText =
+                `${clave} (${cursos[clave]})`;
+
+
+            boton.style.display = "block";
+            boton.style.width = "100%";
+            boton.style.textAlign = "left";
+
+
+            boton.addEventListener(
+                "click",
+                function () {
+
+                    const partes =
+                        clave.split(" ");
+
+                    filtroCurso =
+                        partes[0];
+
+                    const selectCurso =
+                        document.getElementById(
+                            "filtroCurso"
+                        );
+
+                    if (selectCurso) {
+
+                        selectCurso.value =
+                            filtroCurso;
+                    }
+
+                    aplicarFiltros();
+                }
+            );
+
+
+            contenedor.appendChild(boton);
+        });
+}
+
+
+/* ---------------------------------------------------------
+   EXPORTAR TABLA
+--------------------------------------------------------- */
+
+function exportarAlumnos() {
+
+    const filas =
+        obtenerFilas()
+            .filter(fila =>
+                fila.querySelector(".nombre") &&
+                fila.style.display !== "none"
+            );
+
+
+    if (filas.length === 0) {
+
+        alert(
+            "No hay registros para exportar."
+        );
+
+        return;
+    }
+
+
+    let csv =
+        "ID,Nombre,Apellido,DNI,Curso,Division,Turno,UID SUBE,Activo\n";
+
+
+    filas.forEach(fila => {
+
+        const columnas =
+            fila.querySelectorAll("td");
+
+
+        const datos = [
+
+            columnas[0]?.innerText || "",
+            columnas[1]?.innerText || "",
+            columnas[2]?.innerText || "",
+            columnas[3]?.innerText || "",
+            columnas[4]?.innerText || "",
+            columnas[5]?.innerText || "",
+            columnas[6]?.innerText || "",
+            columnas[7]?.innerText || "",
+            columnas[8]?.innerText || "",
+
+        ];
+
+
+        csv +=
+            datos
+                .map(dato =>
+                    `"${dato.replace(/"/g, '""')}"`
+                )
+                .join(",") +
+            "\n";
+    });
+
+
+    const archivo =
+        new Blob(
+            ["\ufeff" + csv],
+            {
+                type: "text/csv;charset=utf-8;"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(archivo);
+
+
+    const enlace =
+        document.createElement("a");
+
+    enlace.href = url;
+    enlace.download = "alumnos.csv";
+
+    enlace.click();
+
+
+    URL.revokeObjectURL(url);
+}
+
+
+/* momento disfrutar de la destruccion de la logica yupi*/
+
+function iniciarExtras() {
+
+    const buscador = document.getElementById("buscador");
+
+    const estado = document.getElementById("filtroEstado");
+
+    const curso = document.getElementById("filtroCurso");
+
+    const turno = document.getElementById("filtroTurno");
+
+    const exportar = document.getElementById("btnExportar");
+
+
+    if (buscador) {
+
+        buscador.addEventListener(
+            "input",
+            function () {
+
+                filtroBusqueda =
+                    this.value;
+
+                aplicarFiltros();
+            }
+        );
+    }
+
+
+    if (estado) {
+
+        estado.addEventListener(
+            "change",
+            function () {
+
+                filtroEstado =
+                    this.value;
+
+                aplicarFiltros();
+            }
+        );
+    }
+
+
+    if (curso) {
+
+        curso.addEventListener(
+            "change",
+            function () {
+
+                filtroCurso =
+                    this.value;
+
+                aplicarFiltros();
+            }
+        );
+    }
+
+
+    if (turno) {
+
+        turno.addEventListener(
+            "change",
+            function () {
+
+                filtroTurno =
+                    this.value;
+
+                aplicarFiltros();
+            }
+        );
+    }
+
+
+    if (exportar) {
+
+        exportar.addEventListener(
+            "click",
+            exportarAlumnos
+        );
+    }
+
+
+    actualizarContadores();
+
+    actualizarCursos();
+}
+
+
+//investigar que es esto
+const observadorTabla =
+    new MutationObserver(
+        function () {
+
+            actualizarContadores();
+            actualizarCursos();
+            aplicarFiltros();
+
+        }
+    );
+
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const tbody =
+            document.querySelector(
+                "#tabla-alumnos tbody"
+            );
+
+
+        if (tbody) {
+
+            observadorTabla.observe(
+                tbody,
+                {
+                    childList: true
+                }
+            );
+        }
+
+
+        iniciarExtras();
+    }
+);

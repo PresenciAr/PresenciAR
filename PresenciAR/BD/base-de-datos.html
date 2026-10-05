@@ -1,39 +1,160 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Alumnos</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="../styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <title>Registro de Alumnos · presenciaAR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./presenciar-registros.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./LBD.js" defer></script>
 </head>
 <body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-area">
+        <a href="../index.html" class="brand">
+          <span>PresenciaAR</span>
+        </a>
+        <span class="topbar-divider"></span>
+        <nav class="breadcrumbs" aria-label="Migas de pan">
+          <a href="../../"><span class="crumb-icon">⌂</span> Página principal</a>
+          <!--
+          la idea es llevarlo a lo mejor a una pagina informativa o algo asi de como funciona todo.
+          -->
+          <span>›</span>
+          <a href="../index.html"> Administración</a>
+          <span>›</span>
+          <strong>Cursos / divisiones</strong>
+        </nav>
+      </div>
 
-    <h1>Registro de Alumnos</h1>
-    <a href="../index.html" class="btn-volver">Volver</a>
-    <a href="asistencias.html" class="btn-volver">Ver Asistencias</a>
-    <button onclick="agregarAlumno()" id="botonAgregar">+</button>
-    <table id="tabla-alumnos">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Apellido</th>
-                <th>DNI</th>
-                <th>Curso</th>
-                <th>Division</th>
-                <th>Turno</th>
-                <th>Uid_Sube</th>
-                <th>Activo</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td colspan="3">Esperando respuesta del archivo JavaScript...</td>
-            </tr>
-            </tbody>
-    </table>
+    </header>
 
-<script src="LBD.js"></script>
+    <main class="page">
+      <section class="page-head">
+        <div>
+          <div class="eyebrow">ADMINISTRACIÓN DE ALUMNOS <span>•</span> PANEL DE DATOS DE LOS ALUMNOS</div>
+          <h1>Registro de alumnos</h1>
+          <p>Consulta, filtra y administra los registros de alumnos conectados a Supabase.</p>
+        </div>
+        <div class="head-actions">
+          <!--
+          Esto esta pensado para migrar la tabla para cargarla en otro lado, se esta pensando traer el boton de importar 
+          pero se esta bajo investigacion devido a que aun no pregunte el metodo que usa la institucion(seguro es el mismo)
+          -->
+          <button class="btn btn-secondary" id="btnExportar" type="button">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 15v4h14v-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Exportar CSV
+          </button>
+          <button class="btn btn-primary" id="botonAgregar" type="button">
+            <span>+</span> Nuevo registro
+          </button>
+        </div>
+      </section>
+
+      <section class="stats-grid" aria-label="Resumen">
+        <article class="stat-card">
+          <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M16 20v-1.5a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4V20M10 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7ZM20 20v-1.5a4 4 0 0 0-3-3.86M15.5 4.1a3.5 3.5 0 0 1 0 6.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <div><span>Total de registros</span><strong id="statTotal">—</strong><small>alumnos</small></div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M15 19a7 7 0 1 0-6-10.58" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M15 7v5h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 18.5 19 20.5l3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><span>Registros activos</span><strong id="statActivos">—</strong><small id="statActivosMeta"> en total</small></div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M7 4h10v16H7zM9.5 7h5M9.5 11h5M9.5 15h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><span>Registros inactivos</span><strong id="statInactivos">—</strong><small>para revisar</small></div>
+        </article>
+      </section>
+
+      <div class="workspace">
+        <section class="table-panel">
+          <div class="panel-titlebar">
+            <div><h2>Registros de alumnos</h2><span id="resultadosLabel">Cargando información…</span></div>
+            <!--<div class="segmented" role="tablist" aria-label="Filtro de estado">
+              <button type="button" class="segment active" data-status="todos">Todos <span id="countTodos">0</span></button>
+              <button type="button" class="segment" data-status="activos">Activos <span id="countActivos">0</span></button>
+              <button type="button" class="segment" data-status="inactivos">Inactivos <span id="countInactivos">0</span></button>
+            </div>
+            por el momento inescesario dejarlo si sobra tiempo
+          -->
+          </div>
+
+          <div class="filterbar">
+            <label class="searchbox" for="buscador">
+              <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.5"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <input id="buscador" type="search" autocomplete="off" placeholder="Buscar por nombre, apellido, DNI o ID…">
+            </label>
+            <select id="filtroCurso" class="select-control" aria-label="Filtrar por curso"><option value="">Curso: todos</option></select>
+            <select id="filtroTurno" class="select-control" aria-label="Filtrar por turno"><option value="">Turno: todos</option></select>
+            <button class="btn btn-filter" id="btnLimpiarFiltros" type="button">Limpiar filtros</button>
+            
+          </div>
+
+          <div class="table-wrap">
+            <table id="tabla-alumnos">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>Apellido</th>
+                  <th>DNI</th>
+                  <th>Curso</th>
+                  <th>División</th>
+                  <th>Turno</th>
+                  <th>UID SUBE</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td colspan="11" class="empty-state">Esperando respuesta de la base de datos…</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table-footer">
+            <div class="pagination-tools">
+              <label>Filas por página <select id="pageSize"><option>6</option><option>10</option><option>20</option></select></label>
+              <button id="prevPage" class="page-btn" type="button" aria-label="Página anterior">‹</button>
+              <div id="pagination"></div>
+              <button id="nextPage" class="page-btn" type="button" aria-label="Página siguiente">›</button>
+            </div>
+          </div>
+        </section>
+
+        <aside class="sidebar">
+          <div class="sidebar-heading"><div><h2>Cursos</h2><p>Selecciona un curso para filtrar la tabla.</p></div><span id="courseCount">0</span></div>
+          <br>
+          <div class="course-list" id="courseList"></div>
+          
+         </aside>
+      </div>
+
+      <div class="page-note"><span>ⓘ</span> La edición se realiza por registro. El campo UID SUBE se mantiene vinculado al flujo de lectura NFC existente.</div>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header"><div><span class="eyebrow">NUEVO REGISTRO</span><h2 id="modalTitle">Agregar alumno</h2></div><button class="icon-button" id="closeModal" type="button" aria-label="Cerrar">×</button></div>
+      <form id="alumnoForm" class="form-grid">
+        <label>Nombre<input name="nombre" required maxlength="80"></label>
+        <label>Apellido<input name="apellido" required maxlength="80"></label>
+        <label>DNI<input name="dni" required maxlength="20"></label>
+        <label>Curso<input name="curso" required maxlength="30" placeholder="Ej. 6to"></label>
+        <label>División<input name="division" required maxlength="20" placeholder="Ej. 1ra"></label>
+        <label>Turno<select name="turno" required><option value="">Seleccionar…</option><option>Mañana</option><option>Tarde</option><option>Noche</option></select></label>
+        <label class="switch-field"><span>Alumno activo</span><span class="switch-wrap"><input name="activo" type="checkbox" checked><span class="switch"></span> Sí</span></label>
+        <div class="modal-actions"><button class="btn btn-secondary" id="cancelModal" type="button">Cancelar</button><button class="btn btn-primary" type="submit">Guardar alumno</button></div>
+      </form>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </body>
 </html>
