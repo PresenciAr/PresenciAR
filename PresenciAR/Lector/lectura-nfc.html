@@ -3,32 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lector NFC Web</title>
+    <title>Lectura NFC - PresenciaAR</title>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="../styles.css">
-    
+    <link rel="stylesheet" href="lector.css">
 </head>
+
 <body>
 
-<div class="container">
-    <h2>Lector de Tarjetas NFC</h2>
-    <p>Hace clic en el boton y acerca una tarjeta SUBE al dispositivo.</p>
-    <h3>
-        Nota: el dispositivo tiene que tener NFC y el navegador tiene que tener permisos para usarlo. En caso de hacerlo en celular y ser redireccionado a la aplicacion 
-        SUBE desactivar abrir automaticamente en el apartado configuracion general de la aplicacion. 
-    </h3>
-    
-    <br>
+    <header class="topbar">
+        <div class="topbar-left">
 
-    <button id="btnEscanear">Iniciar Lectura NFC</button>
+            <a href="../index.html" class="brand">
+                <span>PresenciaAR</span>
+            </a>
+            
+            <span class="topbar-divider"></span>
 
-    <div id="status">Estado: listo para escanear.</div>
-    <div id="log">Los datos leidos van a aparecer aca...</div>
-    <br>
-    <a href="../BD/base-de-datos.html" class="btn-volver">Volver</a>
-</div>
-<script src="Lnfc.js"></script>
+            <nav class="breadcrumbs" aria-label="Migas de pan">
+                <a href="../index.html">
+                    <span class="crumb-icon">⌂</span>
+                    Panel principal
+                </a>
+                <span>></span>
+                <a href="../BD/base-de-datos.html">Cursos / divisiones</a>
+                <span>></span>
+                
+            <strong>Lector</strong>
+            
+            </nav>
 
+        </div>
+    </header>
+
+
+    <main class="contenido">
+
+        <section class="cabecera">
+            <p class="mini-titulo">ASISTENCIA</p>
+
+            <h1>Lector de tarjetas NFC</h1>
+
+            <p class="descripcion">
+                Iniciá la lectura y acercá una tarjeta SUBE al dispositivo.
+            </p>
+        </section>
+
+
+        <section class="lector">
+
+            <div class="panel-lector">
+
+                <p class="etiqueta">LECTURA NFC</p>
+
+                <div class="nfc">
+
+                    <div class="nfc-icon">NFC</div>
+
+                    <h2>Acercá la tarjeta al dispositivo</h2>
+
+                    <p>
+                        Presioná el botón para iniciar la lectura.
+                        Cuando se detecte la tarjeta, el sistema continuará
+                        automáticamente.
+                    </p>
+
+                    <button id="btnEscanear">
+                        Iniciar lectura NFC
+                    </button>
+
+                    <div id="status" class="estado">
+                        Estado: NFC disponible. Presioná el botón para iniciar.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <aside class="panel-info">
+
+                <p class="etiqueta">CÓMO FUNCIONA</p>
+
+                <div class="paso">
+                    <strong>1. Iniciar lectura</strong>
+                    <p>
+                        Presioná el botón para activar el lector NFC.
+                    </p>
+                </div>
+
+                <div class="paso">
+                    <strong>2. Acercar tarjeta</strong>
+                    <p>
+                        Acercá la SUBE al dispositivo y esperá a que sea detectada.
+                    </p>
+                </div>
+
+                <div class="paso">
+                    <strong>3. Continuar</strong>
+                    <p>
+                        Después de detectar la tarjeta, PresenciaAR vuelve
+                        automáticamente al panel correspondiente.
+                    </p>
+                </div>
+
+            </aside>
+
+        </section>
+
+
+        <section class="panel-inferior">
+
+            <p class="mini-titulo">IMPORTANTE</p>
+
+            <p>
+                El dispositivo tiene que tener NFC y el navegador debe
+                permitir su utilización. En celulares, si al acercar la
+                tarjeta se abre automáticamente la aplicación SUBE,
+                desactivá esa opción en la configuración general de la
+                aplicación.
+            </p>
+
+        </section>
+
+
+        <!--
+            Tu Lnfc.js utiliza este elemento para escribir información
+            durante la lectura. Se mantiene oculto porque el usuario
+            vuelve automáticamente al terminar el escaneo.
+        -->
+        <div id="log" hidden></div>
+
+    </main>
+
+
+    <footer>
+        <span>PresenciaAR</span>
+        <span>Lectura NFC</span>
+    </footer>
+
+
+    <script src="Lnfc.js"></script>
 
 </body>
 </html>
