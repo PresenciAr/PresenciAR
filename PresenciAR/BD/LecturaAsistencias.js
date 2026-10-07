@@ -3,7 +3,6 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 const supabase2 = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-
 function diaSemanaDeTimestamp(timestampTexto) {
     const fecha = new Date(timestampTexto);
     return fecha.getDay();
@@ -11,7 +10,7 @@ function diaSemanaDeTimestamp(timestampTexto) {
 
 async function cargarAsistencias() {
 
-    // Traer alumnos
+    // Traer alumnos (para relacionar por uid_sube)
     const { data: alumnos, error: errorAlumnos } = await supabase2
         .from('alumnos')
         .select('id, nombre, apellido, uid_sube');
@@ -31,7 +30,7 @@ async function cargarAsistencias() {
         return;
     }
 
-    // Traer terminales
+    // Traer terminales (para mostrar nombre)
     const { data: terminales, error: errorTerminales } = await supabase2
         .from('terminales')
         .select('id, nombre, ubicacion');
@@ -53,7 +52,7 @@ async function cargarAsistencias() {
         return;
     }
 
-    // Seleccionamos el cuerpo de la tabla en el HTML
+    // Selecciono el cuerpo de la tabla en el HTML
     const tbody = document.querySelector('#tabla-asistencias tbody');
     tbody.innerHTML = '';
 
@@ -74,7 +73,7 @@ async function cargarAsistencias() {
             estado = 'sin_horario';
 
             if (horario) {
-
+                // hora_ingreso llega como texto
                 const [horaIngreso, minutoIngreso] = horario.hora_ingreso.split(':').map(Number);
 
                 const horaLlegada = new Date(asistencia.timestamp);
@@ -88,7 +87,7 @@ async function cargarAsistencias() {
         const fila = document.createElement('tr');
         fila.innerHTML = `
             <td>${nombreCompleto}</td>
-            <td>${new Date(asistencia.timestamp).toLocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })}</td>
+            <td>${new Date(asistencia.timestamp).toLocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' })}</td>
             <td>${terminal ? terminal.nombre : asistencia.terminal_id}</td>
             <td>${estado}</td>
         `;

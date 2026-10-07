@@ -3,31 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Panel de Asistencias</title>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="../styles.css">
+
+    <link rel="stylesheet" href="asistencias.css">
 </head>
+
 <body>
 
-    <h1>Registro de Asistencias</h1>
-    <a href="../index.html" class="btn-volver">Volver</a>
+    <header class="topbar">
+        <div class="topbar-left">
 
-    <table id="tabla-asistencias">
-        <thead>
-            <tr>
-                <th>Alumno</th>
-                <th>Fecha y hora</th>
-                <th>Terminal</th>
-                <th>Estado</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td colspan="4">Esperando respuesta del archivo JavaScript...</td>
-            </tr>
-        </tbody>
-    </table>
+            <a href="../index.html" class="brand">
+                <span>PresenciaAR</span>
+            </a>
 
-<script src="LecturaAsistencias.js"></script>
+            <span class="topbar-divider"></span>
+
+            <nav class="breadcrumbs" aria-label="Migas de pan">
+
+                <a href="../index.html">
+                    <span class="crumb-icon">⌂</span>
+                    Panel principal
+                </a>
+                <span>></span>
+                <strong>Registro de Asistencias</strong>
+
+            </nav>
+
+        </div>
+    </header>
+
+
+    <main class="contenido">
+
+        <section class="cabecera">
+
+            <p class="mini-titulo">ASISTENCIA</p>
+
+            <h1>Registro de asistencias</h1>
+
+            <p class="descripcion">
+                Consultá las últimas lecturas realizadas por las terminales.
+            </p>
+
+        </section>
+
+
+        <section class="resumen">
+
+            <div class="resumen-item">
+                <span class="etiqueta">REGISTROS MOSTRADOS</span>
+                <strong>Últimas 50</strong>
+            </div>
+
+            <div class="resumen-item">
+                <span class="etiqueta">INFORMACIÓN</span>
+                <strong>Alumno · Fecha · Terminal · Estado</strong>
+            </div>
+
+        </section>
+
+
+        <section class="tabla-panel">
+
+            <div class="tabla-cabecera">
+
+                <div>
+                    <p class="mini-titulo">LECTURAS</p>
+
+                    <h2>Asistencias registradas</h2>
+
+                    <p>
+                        Los registros se muestran desde la lectura más reciente.
+                    </p>
+                </div>
+
+                <a href="../index.html" class="volver">
+                    Volver al panel
+                </a>
+
+            </div>
+
+
+            <div class="tabla-contenedor">
+
+                <table id="tabla-asistencias">
+
+                    <thead>
+                        <tr>
+                            <th>Alumno</th>
+                            <th>Fecha y hora</th>
+                            <th>Terminal</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+                            <td colspan="4">
+                                Esperando respuesta del archivo JavaScript...
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <section class="panel-inferior">
+
+            <p class="mini-titulo">ESTADOS</p>
+
+            <p>
+                Una lectura puede aparecer como presente, tardanza,
+                sin horario o como tarjeta no registrada, según los datos
+                asociados al alumno y su horario.
+            </p>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+        <span>PresenciaAR</span>
+        <span>Registro de asistencias</span>
+    </footer>
+
+
+    <script src="LecturaAsistencias.js"></script>
+
 </body>
 </html>
