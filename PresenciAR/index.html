@@ -1,29 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pantalla inicial</title>
+    <title>PresenciaAR</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body class="index">
-    <div class="container">
-        <div class="logo">Presenci<span>AR</span></div>
-        <p class="subtitle">Sistema de control de asistencia</p>
-        <div class="cards">
-            <!--<a href="Lector/lectura-nfc.html" class="card">
-                
-                <div class="card-title">lectura de nfc</div>
-            </a>-->
-            <a href="BD/base-de-datos.html" class="card">
-                
-                <div class="card-title">Base de Datos</div>
+<body>
+
+    <header class="topbar">
+        <div class="topbar-left">
+
+            <a href="index.html" class="brand">
+                <span>PresenciaAR</span>
             </a>
-            <a href="BD/asistencias.html" class="card">
-                
-                <div class="card-title">Ver asistencias</div>
-            </a>
+
+            <span class="topbar-divider"></span>
+
+            <nav class="breadcrumbs" aria-label="Migas de pan">
+                <a href="index.html">
+                    <span class="crumb-icon">⌂</span>
+                    
+                <strong>Panel principal</strong>
+                </a>
+            </nav>
+
         </div>
-    </div>
+    </header>
+
+    <main class="contenido">
+
+        <section class="cabecera">
+            <p class="mini-titulo">SISTEMA DE CONTROL DE ASISTENCIA</p>
+            <h1>Panel principal</h1>
+            <p class="descripcion">
+                Accedé a las funciones principales de PresenciaAR desde un solo lugar.
+            </p>
+        </section>
+
+        <section class="accesos">
+
+            <a href="" class="acceso">
+                <div>
+                    <p class="etiqueta">ASISTENCIA</p>
+                    <h2>Lectura NFC</h2>
+                    <p>
+                        Identificá una tarjeta SUBE y registrá la asistencia.
+                    </p>
+                </div>
+                <span class="flecha">→</span>
+            </a>
+
+            <a href="BD/base-de-datos.html" class="acceso">
+                <div>
+                    <p class="etiqueta">ADMINISTRACIÓN</p>
+                    <h2>Alumnos</h2>
+                    <p>
+                        Consultá, agregá y modificá los registros de los alumnos.
+                    </p>
+                </div>
+                <span class="flecha">→</span>
+            </a>
+
+            <a href="" class="acceso">
+                <div>
+                    <p class="etiqueta">ASISTENCIA</p>
+                    <h2>Tabla de Asistencias</h2>
+                    <p>
+                        Llevá el registro de asistencias y faltas de forma ordenada.
+                    </p>
+                </div>
+                <span class="flecha">→</span>
+            </a>
+
+        </section>
+
+        <section class="panel-inferior">
+            <p class="mini-titulo">PRESENCIAR</p>
+            <h2>Control de asistencia y alumnos</h2>
+            <p>
+                Desde este panel podés acceder a la lectura de tarjetas, administrar alumnos
+                y consultar el registro de faltas.
+            </p>
+        </section>
+
+    </main>
+
+    <footer>
+        <span>PresenciaAR</span>
+        <span>Sistema de control de asistencia</span>
+    </footer>
+
 </body>
 </html>
