@@ -45,6 +45,12 @@
 
                 //actualizacion: la indecision me mata asi que voy a hacer la primera cualquier cosa puedo hacer las otras
                 //a futuro implementar un boton de volver o cancelar en las paginas
+                let estado;
+                if(alumnos.activo==true){
+                     estado="Activo";
+                }else{
+                     estado="Inactivo";
+                }
                 fila.innerHTML = `
                     <td>${alumnos.id}</td>
                     <td class="nombre">${alumnos.nombre}</td>
@@ -54,7 +60,7 @@
                     <td class="division">${alumnos.division}</td>
                     <td class="turno">${alumnos.turno}</td>
                     <td class="uid_sube">${alumnos.uid_sube}</td>
-                    <td class="activo">${alumnos.activo}</td>
+                    <td class="activo">${estado}</td>
                     <td>
                 <button onclick="habilitarEdicion('${alumnos.id}')">Editar Alumno</button>
                 <button onclick="editarSube('${alumnos.id}')" style="background-color: #0046e9; color: white;"> Editar Sube</button>
@@ -168,22 +174,43 @@ function editarSube(id){
 localStorage.setItem('id',id);
 window.location.href="../Lector/lectura-nfc.html";
 }
-function buscador(){
-    //suspendido por no ser prioridad segun el sistema
+/*
+async function validacionesBD(nombre,apellido,dni,curso,division,turno,activo) {
+    nombre.forEach(nombre,()=>{
+        pensar mas seriamente en este tipo de validacion, no creo que funcione de esta forma
+        investigar otra forma mejor o al menos mas eficiente. El objetivo de esta funcion
+        es independientemente de donde sea cargada pueda validar los parametros base de la BD de 
+        villalba
+        if(nombre=='0'||nombre=='1'||nombre=='2'||nombre=='3'||nombre=='4'||nombre=='5'||nombre=='6'||nombre=='7'||nombre=='8'||nombre=='9'){
+            return -1;
+        }
+    });
 }
-
+*/
 async function agregarAlumno() {
-
+    //volver la funcion entera un formulario y ademas realizar las verificaciones
+    //de los campos a ingresar.
+/*
     const nombre = prompt("Ingrese Nombre:") || "";
     if (nombre === null) return; // Si cancela el prompt
 
     const apellido = prompt("Ingrese Apellido:") || "";//el || "" es por un errorsito muy divertido relacionado a lo nulo tarde en verlo
+    if (apellido === null) return; // Si cancela el prompt
+
     const dni = prompt("Ingrese DNI (sin puntos):") || "";
+        if (dni === null) return; // Si cancela el prompt
+
     const curso = prompt("Ingrese Curso (ej: 6to):") || "";
+        if (curso === null) return; // Si cancela el prompt
+
     const division = prompt("Ingrese División (ej: 1ra):") || "";
+        if (division === null) return; // Si cancela el prompt
+
     const turno = prompt("Ingrese Turno (Mañana/Tarde):") || "";
-    const activo = prompt("¿Está activo? (SI/NO):", "SI") || "";
-    const activobool=activo.toLowerCase().trim()=="si";
+        if (turno === null) return; // Si cancela el prompt
+
+Falta el campo de activo, este campo debe ser tomado y validado aun
+*/
 
     const nuevoAlumno = { nombre, apellido, dni, curso, division, turno, activobool };
 
@@ -264,8 +291,7 @@ function aplicarFiltros() {
                 .toLowerCase()
                 .trim() || "";
 
-        const textoCompleto =
-            `${nombre} ${apellido} ${dni}`;
+        const textoCompleto = `${nombre} ${apellido} ${dni}${curso}${turno}${activo}`;
 
 
         const coincideBusqueda =
@@ -291,7 +317,7 @@ function aplicarFiltros() {
             coincideEstado =
                 activo === "true" ||
                 activo === "si" ||
-                activo === "sí" ||
+                activo === "activo" ||
                 activo === "1";
 
         }
@@ -301,7 +327,8 @@ function aplicarFiltros() {
             coincideEstado =
                 activo === "false" ||
                 activo === "no" ||
-                activo === "0";
+                activo === "0"||
+                activo === "inactivo";
 
         }
 
@@ -342,14 +369,14 @@ function actualizarContadores() {
         total++;
 
         const activo =
-            fila.querySelector(".activo")?.innerText
+            fila.querySelector(".activo")?.innerTextactivo
                 .toLowerCase()
                 .trim();
 
         const estaActivo =
             activo === "true" ||
             activo === "si" ||
-            activo === "sí" ||
+            activo === "" ||
             activo === "1";
 
         if (estaActivo) {
@@ -499,7 +526,7 @@ function actualizarCursos() {
 /* ---------------------------------------------------------
    EXPORTAR TABLA
 --------------------------------------------------------- */
-
+/*
 function exportarAlumnos() {
 
     const filas =
@@ -579,7 +606,7 @@ function exportarAlumnos() {
 
     URL.revokeObjectURL(url);
 }
-
+*/
 
 /* momento disfrutar de la destruccion de la logica yupi*/
 
@@ -593,8 +620,8 @@ function iniciarExtras() {
 
     const turno = document.getElementById("filtroTurno");
 
-    const exportar = document.getElementById("btnExportar");
-
+    /*const exportar = document.getElementById("btnExportar")*/
+    const nuevoRegistro=document.getElementById("botonAgregar");
 
     if (buscador) {
 
@@ -656,13 +683,19 @@ function iniciarExtras() {
     }
 
 
-    if (exportar) {
+    /*if (exportar) {
 
         exportar.addEventListener(
             "click",
             exportarAlumnos
         );
-    }
+    }*/
+   if(nuevoRegistro){
+    nuevoRegistro.addEventListener(
+        "click",
+        agregarAlumno
+    );
+   }
 
 
     actualizarContadores();
