@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <title>Parte de preceptor · presenciaAR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./presenciar-registros.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./preceptor.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-area">
+        <a href="../index.html" class="brand">
+          <span>PresenciaAR</span>
+        </a>
+        <span class="topbar-divider"></span>
+        <nav class="breadcrumbs" aria-label="Migas de pan">
+          <a href="../index.html"><span class="crumb-icon">⌂</span> Panel principal</a>
+          <span>›</span>
+          <strong>Tomar lista (Preceptor)</strong>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page">
+      <section class="page-head">
+        <div>
+          <div class="eyebrow">CONTROL EN AULA <span>•</span> APOYO A PRECEPTORES</div>
+          <h1>Lista de curso y control de presentes</h1>
+          <p>Revisá cuántos alumnos marcó la SUBE, compará con el aula y ajustá quién falta o quién está de más.</p>
+        </div>
+        <div class="head-actions">
+          <a class="btn btn-secondary" href="./asistencias.html">Ver historial NFC</a>
+        </div>
+      </section>
+
+      <section class="stats-grid" aria-label="Control numérico del aula">
+        <article class="stat-card">
+          <div><span>Alumnos del curso</span><strong id="statEsperados">—</strong><small>activos en lista</small></div>
+        </article>
+        <article class="stat-card">
+          <div><span>Marcados por SUBE</span><strong id="statSube">—</strong><small>con lectura hoy</small></div>
+        </article>
+        <article class="stat-card">
+          <div><span>Diferencia</span><strong id="statDiferencia">—</strong><small id="detalleDiferencia">seleccioná un curso</small></div>
+        </article>
+      </section>
+
+      <section class="table-panel">
+        <div class="panel-titlebar">
+          <div>
+            <h2 id="tituloCursoPreceptor">Seleccioná un curso</h2>
+            <span id="infoBloquePreceptor">Elegí curso, fecha y bloque horario para cargar la lista.</span>
+          </div>
+          <button class="btn btn-filter" id="btnGuardarParte" type="button">Guardar parte del día</button>
+        </div>
+
+        <div class="filterbar">
+          <select id="selectCursoPreceptor" class="select-control" aria-label="Curso y división">
+            <option value="">Elegir curso...</option>
+          </select>
+
+          <input id="inputFechaPreceptor" type="date" class="select-control" aria-label="Fecha">
+
+          <select id="selectBloquePreceptor" class="select-control" aria-label="Bloque horario">
+            <option value="1">Horario 1 (Ingreso principal)</option>
+            <option value="2">Horario 2 (Taller / Contraturno)</option>
+          </select>
+
+          <button class="btn btn-filter" id="btnMarcarTodosPresentes" type="button">Marcar todos presentes</button>
+        </div>
+
+        <div id="avisoSobrantes" style="padding: 10px 16px; display: none;"></div>
+
+        <div class="table-wrap">
+          <table id="tabla-preceptor">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Alumno</th>
+                <th>DNI</th>
+                <th>Hora SUBE</th>
+                <th>Estado automático</th>
+                <th>Estado en aula (Preceptor)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="6" class="empty-state">Elegí un curso para ver la lista…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
