@@ -76,6 +76,38 @@
         </div>
       </section>
 
+<!-- Mini-sección: días sin clase del año -->
+<section class="table-panel" style="margin-bottom: 18px;">
+  <div class="panel-titlebar">
+    <div>
+      <h2>Días sin clase del año</h2>
+      <span id="infoDiasSinClase">Sábados y domingos se excluyen automáticamente; acá marcás feriados o jornadas.</span>
+    </div>
+  </div>
+
+  <div class="filterbar">
+    <input id="inputFechaSinClase" type="date" class="select-control" aria-label="Fecha sin clase">
+    <input id="inputMotivoSinClase" type="text" class="select-control" placeholder="Motivo (ej. Feriado, Jornada)" aria-label="Motivo">
+    <button class="btn btn-filter" id="btnAgregarSinClase" type="button">Marcar día sin clase</button>
+  </div>
+
+  <div class="table-wrap">
+    <table id="tabla-dias-sin-clase">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Día</th>
+          <th>Motivo</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="4" class="empty-state">Sin días especiales cargados para este año.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
       <!-- Tabla principal de asistencias -->
       <section class="table-panel">
         <div class="panel-titlebar">

@@ -48,7 +48,7 @@ async function cargarTodo() {
 
     const resAlumnos = await supabase2.from('alumnos').select('*');
     const resCursos = await supabase2.from('cursos').select('*');
-    const resAsist = await supabase2.from('asistencias1').select('*');
+    const resAsist = await supabase2.from('asistencias').select('*');
     const resPartes = await supabase2.from('partes_preceptor').select('*');
 
     if (resAlumnos.error || resCursos.error || resAsist.error) {
@@ -236,3 +236,54 @@ document.addEventListener("DOMContentLoaded", function () {
 
     cargarTodo();
 });
+
+/*
+Recordatorio para el yo de dentro de unos dias:
+
+en index.html esta la ruta a los demas archivos es como el menu principal que siempre va a ver el preceptor
+
+preceptor.hmtl es para la vista y correcion del preceptor por curso que pase
+
+asistencias.html su principal funcion fue retirada lo tenemos que borrar de futuras entregas del projecto
+
+asistencias1.html aca se ven las asistencias en crudo que registran las teminales
+
+base-de-datos.html es para ver los datos privados de los alumnos asi como su sube asociada
+
+
+en lo que respecta a las tablas, alguien las limpio a todas y no tienen datos en la actualidad,
+sospecho que fue oscar o algo paso no importa por que tenemos planeado migrar la base de datos de supabase a 
+el raspberry pi para tenerlo a modo servidor local y no depender de servicios externos.
+Por lo pronto vamos a tener que arreglar los lijeros problemas que tiene el projecto, entre ellos por orden de
+prioridad tengo que:
+
+*hacer este javascript para que los preceptores puedan visualizar de forma correcta los ausentes por el momento estoy viendo algo
+y es el simple hecho de a lo mejor no contar los dias presentes y ausentes como tal.
+// hola yo del futuro soy el yo del pasado no tan pasado como el bobo que escribio lo de arriba esta es una aclaracion importante
+por que se me complica continuar esta parte hasta la otra semana asi que te dejo una nota por que te conozco y te vas a olvidar
+anteriormente me explique medio mal ahora lo razono mas mejor. Bueno estoy pensando en si el preceptor le conviene de momento
+el no tener la cantidad de ausentes. por que te preguntaras y eso es por que se complican los feriados y ademas los ausentes 
+por que como estamos estructurando las cosas al parecer contamos los fines de semana como ausente por que en realidad contamos
+los precentes y hacemos el calculo en base a eso. Bueno la idea es que los preceptores pongan cuantas clases va a haber este ciclo lectivo
+mejor dicho la administracion y en base a eso haga el calculo de ausentes en base a las clases pasada... ok lo pienso mejor la otra semana
+pero me gusto la idea sabelo.
+
+*poner bien los links por que estan redireccionados a cualquier lado en la actualidad
+
+*en cada alumno poner por las dudas una tabla individual de los presentes y ausentes
+
+*que los fines de semana no se cuenten y ademas los feriados tampoco
+
+*estructurar las tablas en la bd para que queden mas unidas es decir simplificarlas para mejor entendimiento
+
+*cargar minimo 2 cursos y probar que el sistema funcione antes del 20/11
+
+*explicarle a todos los demas como funciona el backend de forma detallada y simple para su mente mortal
+
+*delegar todas las tareas relacionadas al proyecto a los demas por que vamos justos de tiempo como para hacer otra cosa
+
+*ayudar a casoni a romperle su aplicacion para que visualizen el poder de un usuario que le cuesta mentalmente
+
+
+
+*/
