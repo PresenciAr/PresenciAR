@@ -37,7 +37,7 @@ const char* password = "12345678";
 const char* supabaseUrl = "https://pqtpjvxyjdemcnpmnhxv.supabase.co/rest/v1/asistencias";
 const char* supabaseApiKey = "Codigo de la API secreta de SupaBase";
 
-// UUID de esta terminal especifica. Hay que crear una fila para este
+// ID de esta terminal especifica. Hay que crear una fila para este
 // dispositivo en la tabla "terminales" y copiar aca su "id".
 const int TERMINAL_ID = 1;
 
@@ -151,26 +151,28 @@ void loop() {
   // A partir de aca, la lectura fue exitosa
   senialLecturaExitosa();
 
-  // Obtener fecha y hora actual del RTC
+  // Obtener fecha y hora actual del RTC, en dos textos separados
   DateTime ahora = rtc.now();
-  char fechaHora[26];
-  sprintf(fechaHora, "%04d-%02d-%02dT%02d:%02d:%02d-03:00",
-          ahora.year(), ahora.month(), ahora.day(),
-          ahora.hour(), ahora.minute(), ahora.second());
+  char fecha[11];
+  char hora[9];
+  sprintf(fecha, "%04d-%02d-%02d", ahora.year(), ahora.month(), ahora.day());
+  sprintf(hora, "%02d:%02d:%02d", ahora.hour(), ahora.minute(), ahora.second());
 
   Serial.print("Tarjeta detectada. UID: ");
   Serial.print(uid);
+  Serial.print(" | Fecha: ");
+  Serial.print(fecha);
   Serial.print(" | Hora: ");
-  Serial.println(fechaHora);
+  Serial.println(hora);
 
   // Intentar enviar directo
   bool exito = false;
   if (WiFi.status() == WL_CONNECTED) {
-    exito = enviarASupabase(uid, fechaHora);
+    exito = enviarASupabase(uid, fecha, hora);
   }
 
   if (!exito) {
-    guardarPendiente(uid, fechaHora);
+    guardarPendiente(uid, fecha, hora);
   }
 
   lector.PICC_HaltA();
@@ -178,7 +180,7 @@ void loop() {
 }
 
 // Envia UN registro a Supabase. Devuelve true si se guardo bien.
-bool enviarASupabase(String uid, String fechaHora) {
+bool enviarASupabase(String uid, String fecha, String hora) {
   HTTPClient http;
   http.begin(supabaseUrl);
   http.addHeader("Content-Type", "application/json");
@@ -189,7 +191,8 @@ bool enviarASupabase(String uid, String fechaHora) {
   StaticJsonDocument<256> datos;
   datos["terminal_id"] = TERMINAL_ID;
   datos["uid_leido"] = uid;
-  datos["timestamp"] = fechaHora;
+  datos["fecha"] = fecha;
+  datos["hora_entrada"] = hora;
 
   String cuerpo;
   serializeJson(datos, cuerpo);
@@ -204,14 +207,14 @@ bool enviarASupabase(String uid, String fechaHora) {
   return (respuesta == 200 || respuesta == 201 || respuesta == 204);
 }
 
-// Agrega una linea "uid,fechaHora" al archivo de pendientes
-void guardarPendiente(String uid, String fechaHora) {
+// Agrega una linea "uid,fecha,hora" al archivo de pendientes
+void guardarPendiente(String uid, String fecha, String hora) {
   File archivo = LittleFS.open(ARCHIVO_PENDIENTES, "a"); // "a" = agregar al final
   if (!archivo) {
     Serial.println("No se pudo abrir el archivo de pendientes");
     return;
   }
-  archivo.println(uid + "," + fechaHora);
+  archivo.println(uid + "," + fecha + "," + hora);
   archivo.close();
   Serial.println("Guardado como pendiente (sin conexion).");
 }
@@ -242,14 +245,16 @@ void enviarPendientes() {
     linea.trim();
     if (linea.length() == 0) continue;
 
-    // Separar "uid,fechaHora"
-    int comaPos = linea.indexOf(',');
-    if (comaPos == -1) continue;
+    // Separar "uid,fecha,hora" usando las dos comas
+    int coma1 = linea.indexOf(',');
+    int coma2 = linea.indexOf(',', coma1 + 1);
+    if (coma1 == -1 || coma2 == -1) continue;
 
-    String uid = linea.substring(0, comaPos);
-    String fechaHora = linea.substring(comaPos + 1);
+    String uid = linea.substring(0, coma1);
+    String fecha = linea.substring(coma1 + 1, coma2);
+    String hora = linea.substring(coma2 + 1);
 
-    bool exito = enviarASupabase(uid, fechaHora);
+    bool exito = enviarASupabase(uid, fecha, hora);
 
     if (!exito) {
       // Si falla, lo guardamos para reintentar despues
