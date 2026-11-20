@@ -15,10 +15,13 @@ const HORARIO_POR_DEFECTO = {
     "Tarde": "12:40"
 };
 
+const TOLERANCIA_MINUTOS = 5;
+
 let listaAlumnos = [];
 let listaCursos = [];
 let listaAsistencias = [];
 let listaDiasSinClase = [];
+let listaPartes = [];
 
 // Junta curso y división en un solo texto, por ejemplo: "6to 1ra"
 function obtenerClaveCurso(alumno) {
@@ -88,6 +91,29 @@ function buscarCursoDeAlumno(alumno) {
     return encontrado || null;
 }
 
+// Margen antes y después del horario límite para considerar "Presente" por defecto
+const MINUTOS_ANTES_PRESENTE = 5;
+const TOLERANCIA_DESPUES_PRESENTE = 15;
+
+// Evalúa si entradaMin cae dentro de la tolerancia para ser "Presente"; si se pasó, queda "Ausente"
+function evaluarContraLimite(entradaMin, limiteTexto) {
+    const limiteMin = minutosDesdeMedianoche(limiteTexto);
+    const horaMinimaPresente = limiteMin - MINUTOS_ANTES_PRESENTE;
+    const horaMaximaPresente = limiteMin + TOLERANCIA_DESPUES_PRESENTE;
+    if (entradaMin <= horaMaximaPresente) {
+        return "Presente";
+    } else {
+        return "Ausente";
+    }
+    /*
+    ummm cancelo esto por ahora atte: yo
+    if (entradaMin >= horaMinimaPresente && entradaMin <= horaMaximaPresente) {
+        return "Presente";
+    } else {
+        return "Llegada tarde";
+    }*/
+}
+
 // Decide qué estado mostrar en la tabla
 function calcularEstado(alumno, horaEntrada, cursoObj, fechaTexto) {
     if (esDiaSinClase(fechaTexto)) {
@@ -116,11 +142,7 @@ function calcularEstado(alumno, horaEntrada, cursoObj, fechaTexto) {
 
     // Si el curso solo tiene un horario límite, comparamos directo contra ese
     if (!limite2) {
-        if (entradaMin <= minutosDesdeMedianoche(limite1)) {
-            return "Presente";
-        } else {
-            return "Llegada tarde";
-        }
+        return evaluarContraLimite(entradaMin, limite1);
     }
 
     // Si tiene dos horarios (ej. aula y taller), elegimos el que esté más cerca
@@ -132,11 +154,7 @@ function calcularEstado(alumno, horaEntrada, cursoObj, fechaTexto) {
         limiteElegido = limite2;
     }
 
-    if (entradaMin <= minutosDesdeMedianoche(limiteElegido)) {
-        return "Presente";
-    } else {
-        return "Llegada tarde";
-    }
+    return evaluarContraLimite(entradaMin, limiteElegido);
 }
 
 // Busca el alumno dueño de una lectura de asistencia
@@ -175,6 +193,7 @@ async function cargarDatosAsistencia() {
         .from('dias_sin_clase')
         .select('fecha, motivo')
         .order('fecha', { ascending: true });
+    const resPartes = await supabase2.from('partes_preceptor').select('*');
 
     if (resAlumnos.error || resCursos.error || resAsist.error || resSinClase.error) {
         console.error(
@@ -188,6 +207,7 @@ async function cargarDatosAsistencia() {
     listaCursos = resCursos.data || [];
     listaAsistencias = resAsist.data || [];
     listaDiasSinClase = resSinClase.data || [];
+    listaPartes = resPartes.error ? [] : (resPartes.data || []);
 
     llenarSelectAlumnos();
     llenarSelectsCursos();
@@ -516,6 +536,9 @@ function renderizarAsistencias() {
     let sinRegistrar = 0;
     let mostrados = 0;
 
+    // Guardamos qué (fecha + alumno_id) ya salieron desde asistencias para no duplicar
+    const yaMostrados = new Set();
+
     tbody.innerHTML = "";
 
     listaAsistencias.forEach(function (reg) {
@@ -538,11 +561,11 @@ function renderizarAsistencias() {
             }
         }
 
-        const fechaTexto = String(reg.fecha || "");
-        const partes = fechaTexto.split("-");
-        const regAnio = partes[0] || "";
-        const regMes = partes[1] || "";
-        const regDia = partes[2] || "";
+        const fechaTexto = String(reg.fecha || "").slice(0, 10);
+        const partesFecha = fechaTexto.split("-");
+        const regAnio = partesFecha[0] || "";
+        const regMes = partesFecha[1] || "";
+        const regDia = partesFecha[2] || "";
 
         if (anio && regAnio !== anio) {
             return;
@@ -554,8 +577,24 @@ function renderizarAsistencias() {
             return;
         }
 
+        if (alumno) {
+            yaMostrados.add(`${fechaTexto}__${alumno.id}`);
+        }
+
         const cursoObj = buscarCursoDeAlumno(alumno);
-        const estado = calcularEstado(alumno, reg.hora_entrada, cursoObj, fechaTexto);
+        let estado = calcularEstado(alumno, reg.hora_entrada, cursoObj, fechaTexto);
+
+        // Si el preceptor modificó este alumno en esa fecha, su estado manda sobre el automático
+        if (alumno) {
+            const parteManual = listaPartes.find(function (p) {
+                return String(p.fecha || "").slice(0, 10) === fechaTexto &&
+                       String(p.alumno_id) === String(alumno.id);
+            });
+
+            if (parteManual && parteManual.estado) {
+                estado = parteManual.estado;
+            }
+        }
 
         let nombreCompleto = `UID ${reg.uid_leido}`;
         if (alumno) {
@@ -600,6 +639,92 @@ function renderizarAsistencias() {
             <td>${cursoDiv}</td>
             <td>${turno}</td>
             <td>${hora}</td>
+            <td>${estado}</td>
+        `;
+        tbody.appendChild(fila);
+    });
+
+    // Sumamos los registros guardados en partes_preceptor que no tenían fila en asistencias
+    listaPartes.forEach(function (parte) {
+        if (!parte || !parte.estado) {
+            return;
+        }
+
+        const fechaTexto = String(parte.fecha || "").slice(0, 10);
+        const clavePar = `${fechaTexto}__${parte.alumno_id}`;
+
+        if (yaMostrados.has(clavePar)) {
+            return;
+        }
+
+        const alumno = listaAlumnos.find(function (a) {
+            return String(a.id) === String(parte.alumno_id);
+        });
+
+        if (alumnoId) {
+            if (!alumno || String(alumno.id) !== String(alumnoId)) {
+                return;
+            }
+        }
+
+        const claveCurso = alumno
+            ? obtenerClaveCurso(alumno)
+            : String(parte.curso_clave || "").trim();
+
+        if (cursoFiltro) {
+            if (claveCurso !== cursoFiltro) {
+                return;
+            }
+        }
+
+        const partesFecha = fechaTexto.split("-");
+        const regAnio = partesFecha[0] || "";
+        const regMes = partesFecha[1] || "";
+        const regDia = partesFecha[2] || "";
+
+        if (anio && regAnio !== anio) {
+            return;
+        }
+        if (mes && regMes !== mes) {
+            return;
+        }
+        if (dia && regDia !== dia) {
+            return;
+        }
+
+        yaMostrados.add(clavePar);
+
+        const estado = esDiaSinClase(fechaTexto) ? "Sin clase" : parte.estado;
+
+        const nombreCompleto = alumno
+            ? `${alumno.apellido}, ${alumno.nombre}`
+            : `Alumno #${parte.alumno_id}`;
+
+        const dni = (alumno && alumno.dni) ? alumno.dni : "—";
+        const cursoDiv = claveCurso || "—";
+        const turno = (alumno && alumno.turno) ? alumno.turno : "—";
+        const horaMod = parte.hora_modificacion
+    ? `${String(parte.hora_modificacion).slice(0, 5)} (mod.)`
+    : "—";
+
+        if (estado === "Presente") {
+            presentes++;
+        } else if (estado === "Llegada tarde") {
+            tardes++;
+        } else if (estado !== "Sin clase") {
+            sinRegistrar++;
+        }
+
+        mostrados++;
+
+        const fila = document.createElement("tr");
+        fila.innerHTML = `
+            <td>${fechaTexto || "—"}</td>
+            <td>${nombreCompleto}</td>
+            <td>${dni}</td>
+            <td>${cursoDiv}</td>
+            <td>${turno}</td>
+            <td>${horaMod}</td>
             <td>${estado}</td>
         `;
         tbody.appendChild(fila);

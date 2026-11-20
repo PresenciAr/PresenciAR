@@ -164,7 +164,7 @@ function renderizarListaPreceptor() {
 
     document.getElementById("statEsperados").innerText = esperados;
     document.getElementById("statSube").innerText = marcadosSube;
-    document.getElementById("statDiferencia").innerText = (dif > 0 ? `+${dif}` : `${dif}`);
+    document.getElementById("statDiferencia").innerText = (dif > 0 ? `${dif}` : `${dif * -1}`);
 
     const detalle = document.getElementById("detalleDiferencia");
     if (dif === 0) {
@@ -196,12 +196,17 @@ async function guardarPartePreceptor() {
         return;
     }
 
+    // Hora actual para dejar evidencia de cuándo intervino el preceptor
+    const ahora = new Date();
+    const horaActual = ahora.toTimeString().slice(0, 8);
+
     const selects = Array.from(document.querySelectorAll(".estado-preceptor"));
     const filasParaGuardar = selects.map(sel => ({
         fecha: fecha,
         curso_clave: cursoClave,
         alumno_id: Number(sel.dataset.alumnoId),
-        estado: sel.value
+        estado: sel.value,
+        hora_modificacion: horaActual
     }));
 
     const { error } = await supabase2
@@ -214,12 +219,56 @@ async function guardarPartePreceptor() {
         return;
     }
 
+    // Reflejamos en la tabla principal "asistencias": reemplazamos si ya existe el registro de ese alumno en esa fecha,
+    // o creamos uno nuevo si el alumno no tenía fichada en esa fecha (ej. llegó tarde y lo cargó el preceptor).
+    for (const fila of filasParaGuardar) {
+        const alumno = listaAlumnos.find(a => Number(a.id) === Number(fila.alumno_id));
+        const existente = listaAsistencias.find(
+            r => String(r.fecha).slice(0, 10) === fecha &&
+                 String(r.alumno_id) === String(fila.alumno_id)
+        );
+
+        if (existente) {
+            const { error: errUpdate } = await supabase2
+                .from('asistencias')
+                .update({
+                    hora_entrada: existente.hora_entrada || horaActual,
+                    uid_leido: existente.uid_leido || (alumno && alumno.uid_sube ? alumno.uid_sube : "PRECEPTOR")
+                })
+                .eq('id', existente.id);
+
+            if (errUpdate) {
+                console.error("Error al actualizar asistencia:", errUpdate);
+            }
+        } else if (fila.estado !== "Ausente") {
+            const { error: errInsert } = await supabase2
+                .from('asistencias')
+                .insert({
+                    fecha: fecha,
+                    alumno_id: fila.alumno_id,
+                    uid_leido: (alumno && alumno.uid_sube) ? alumno.uid_sube : "PRECEPTOR",
+                    terminal_id: "PRECEPTOR",
+                    hora_entrada: horaActual
+                });
+
+            if (errInsert) {
+                console.error("Error al insertar asistencia desde preceptor:", errInsert);
+            }
+        }
+    }
+
     const resPartes = await supabase2.from('partes_preceptor').select('*');
     if (!resPartes.error) {
         listaPartes = resPartes.data || [];
     }
 
-    alert(`Parte de ${cursoClave} (${fecha}) guardado.`);
+    const resAsist = await supabase2.from('asistencias').select('*');
+    if (!resAsist.error) {
+        listaAsistencias = resAsist.data || [];
+    }
+
+    renderizarListaPreceptor();
+    alert(`Parte de ${cursoClave} (${fecha}) guardado a las ${horaActual.slice(0, 5)} hs.`);
 }
 
 document.addEventListener("DOMContentLoaded", function () {

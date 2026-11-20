@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,7 +18,7 @@
             <a href="../index.html" class="brand">
                 <span>PresenciaAR</span>
             </a>
-            
+
             <span class="topbar-divider"></span>
 
             <nav class="breadcrumbs" aria-label="Migas de pan">
@@ -28,9 +29,9 @@
                 <span>></span>
                 <a href="../BD/base-de-datos.html">Cursos / divisiones</a>
                 <span>></span>
-                
-            <strong>Lector</strong>
-            
+
+                <strong>Lector</strong>
+
             </nav>
 
         </div>
@@ -76,6 +77,22 @@
                         Estado: NFC disponible. Presioná el botón para iniciar.
                     </div>
 
+                </div>
+                <div class="nfc" style="margin-top: 20px;">
+                    <h2>O usar una terminal existente</h2>
+                    <p>
+                        Si estás en una PC/notebook sin NFC, ingresá el ID de terminal,
+                        apoyá la SUBE en ella y tomá la última lectura.
+                    </p>
+
+                    <select id="selectTerminalId">
+                        <option value="">Cargando terminales...</option>
+                    </select>
+                    <button id="btnLeerTerminal" type="button">Tomar lectura de terminal</button>
+
+                    <div id="estadoTerminal" class="estado">
+                        Estado: Esperando consulta a terminal.
+                    </div>
                 </div>
 
             </div>
@@ -146,4 +163,5 @@
     <script src="Lnfc.js"></script>
 
 </body>
+
 </html>

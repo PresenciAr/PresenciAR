@@ -148,10 +148,49 @@ async function actualizar(id) {
     alert('¡Alumno actualizado correctamente!');
     cargarAlumnos();
 }
+async function subeYaAsignada(uidSube, alumnoIdActual) {
+    const uidLimpio = String(uidSube || "").trim();
+    if (!uidLimpio) {
+        return false;
+    }
+
+    const { data, error } = await supabase2
+        .from('alumnos')
+        .select('id, nombre, apellido, dni')
+        .eq('uid_sube', uidLimpio);
+
+    if (error) {
+        alert('Error al verificar si la SUBE ya está en uso: ' + error.message);
+        console.error(error);
+        return true; // Por seguridad frenamos si falló la consulta
+    }
+
+    const otroAlumno = (data || []).find(function (alumno) {
+        return String(alumno.id) !== String(alumnoIdActual);
+    });
+
+    if (otroAlumno) {
+        alert(`Esa SUBE ya pertenece a ${otroAlumno.apellido}, ${otroAlumno.nombre} (DNI: ${otroAlumno.dni}).`);
+        return true;
+    }
+
+    return false;
+}
 
 async function regresoPortal() {
     const id = localStorage.getItem('id');
-    const nuevoUid_sube = localStorage.getItem('portal');
+    const nuevoUid_sube = String(localStorage.getItem('portal') || "").trim();
+
+    if (!nuevoUid_sube) {
+        alert('No se detectó un código de SUBE válido.');
+        return;
+    }
+
+    const duplicada = await subeYaAsignada(nuevoUid_sube, id);
+    if (duplicada) {
+        return;
+    }
+
     const { error } = await supabase2
         .from('alumnos')
         .update({ uid_sube: nuevoUid_sube })
