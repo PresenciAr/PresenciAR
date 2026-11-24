@@ -1,15 +1,15 @@
 /*
   Conexiones del lector RC522:
-    SDA(SS) -> Pin 1
-    SCK     -> Pin 2
-    MOSI    -> Pin 42
-    MISO    -> Pin 41
-    RST     -> Pin 40
+    SDA(SS) -> Pin 2
+    SCK     -> Pin 42
+    MOSI    -> Pin 41
+    MISO    -> Pin 40
+    RST     -> Pin 39
     3.3V / GND
 
   Conexiones del modulo DS3231:
-    SDA -> Pin 38
-    SCL -> Pin 39
+    SDA -> Pin 37
+    SCL -> Pin 38
     3.3V / GND
 
   Conexiones del LED:
@@ -17,7 +17,7 @@
     Rojo  -> Pin 5 
 
   Conexion del buzzer activo:
-    Positivo -> Pin 6
+    Positivo -> Pin 8
 */
 
 #include <SPI.h>
