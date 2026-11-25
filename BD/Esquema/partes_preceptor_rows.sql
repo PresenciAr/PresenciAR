@@ -1,0 +1,1 @@
+INSERT INTO public.partes_preceptor (id, fecha, curso_clave, alumno_id, estado, hora_modificacion) VALUES (1, '2026-11-20', '2do 2da', 1, 'Ausente', '22:59:56'), (3, '2026-11-20', '1ro 3ra', 2, 'Llegada tarde', '00:34:51'), (6, '2026-11-20', '1ra 2da', 4, 'Presente', '13:44:49');

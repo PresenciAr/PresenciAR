@@ -1,0 +1,1 @@
+INSERT INTO public.cursos (id, nombre, hora_limite, hora_limite_1, hora_limite_2) VALUES (1, '2do 2da', '07:15:00', '07:15:00', '12:40:00'), (2, '1ra 2da', '07:15:00', '07:15:00', '07:15:00'), (4, '1ro 2da', '07:15:00', '07:15:00', null);

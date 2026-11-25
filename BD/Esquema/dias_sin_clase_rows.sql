@@ -1,0 +1,1 @@
+INSERT INTO public.dias_sin_clase (fecha, motivo) VALUES ('2026-11-23', 'Feriado');

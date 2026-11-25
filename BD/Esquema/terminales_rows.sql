@@ -1,0 +1,1 @@
+INSERT INTO public.terminales (id, nombre, ubicacion, activa) VALUES (1, 'Terminal 1', 'Aula 1', true);
